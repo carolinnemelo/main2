@@ -8,7 +8,7 @@ See [Event Sourcing 101](./event-sourcing-101.md) for a quick introduction. A qu
 
 In this assignment, you will write functions for handling banking events to generate the status of a bank account. We have supplied a starting boilerplate for you in the [./src/accountAggregate.ts](./src/accountAggregate.ts) file and your mission is by using a TDD approach, step-by-step implement more and more functionality. The tests are here to guide you, and not to be changed at any point.
 
-The first three tests should already pass, and you can continue from there. You’re finished once all the tests pass and you feel confident that the code reflects your best work. Remember to refactor!
+The first few tests should already pass, and you can continue from there. You’re finished once all the tests pass and you feel confident that the code reflects your best work. Remember to refactor!
 
 ## Info
 
