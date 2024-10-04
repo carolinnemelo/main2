@@ -1,0 +1,53 @@
+name: Autograding Tests
+
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]' && github.run_number != 1 && !contains(github.event.repository.name, 'template')
+
+    steps:
+
+    - uses: actions/checkout@v4
+    
+    - name: Get npm cache directory
+      id: npm-cache-dir
+      run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+
+    - name: Restore Node packages
+      uses: actions/cache/restore@v4
+      with:
+        path: ${{ steps.npm-cache-dir.outputs.dir }}
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+    - run: npm ci
+
+    - id: test-suite
+      name: Running the Test Suite
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test Suite
+        command: npm run test:no-watch
+        max-score: 1
+
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        RESULTS: "${{steps.test-suite.outputs.result}}"
+      with:
+        runners: Results
+
+    - name: Save Node packages
+      if: always()
+      uses: actions/cache/save@v4
+      with:
+        path: ${{ steps.npm-cache-dir.outputs.dir }}
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}

@@ -1,0 +1,11 @@
+[
+  {
+    "type": "withdrawal",
+    "eventId": 1,
+    "timestamp": "2024-10-02T10:30:00Z",
+    "accountId": "ACC123456",
+    "amount": 500,
+    "transactionId": "TX12342",
+    "currency": "USD"
+  }
+]

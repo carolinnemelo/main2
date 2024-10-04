@@ -1,0 +1,15 @@
+{
+  "name": "tdd-event-sourcing-soluton",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "vitest",
+    "test:no-watch": "vitest run"
+  },
+  "author": "Mathias Viklund",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.7.4",
+    "typescript": "^5.6.2",
+    "vitest": "^2.1.2"
+  }
+}

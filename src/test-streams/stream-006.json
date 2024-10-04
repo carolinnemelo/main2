@@ -1,0 +1,21 @@
+[
+  {
+    "type": "account-created",
+    "eventId": 1,
+    "timestamp": "2024-10-01T10:00:00Z",
+    "accountId": "ACC123456",
+    "customerId": "CUST001",
+    "initialBalance": 5000.0,
+    "maxBalance": 1000000,
+    "currency": "USD"
+  },
+  {
+    "type": "deposit",
+    "eventId": 2,
+    "timestamp": "2024-10-02T10:30:00Z",
+    "accountId": "ACC123456",
+    "amount": 2000000,
+    "transactionId": "TX12342",
+    "currency": "USD"
+  }
+]
