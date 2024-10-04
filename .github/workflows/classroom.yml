@@ -41,9 +41,9 @@ jobs:
     - name: Autograding Reporter
       uses: classroom-resources/autograding-grading-reporter@v1
       env:
-        RESULTS: "${{steps.test-suite.outputs.result}}"
+        TEST_RESULTS: "${{steps.test-suite.outputs.result}}"
       with:
-        runners: Results
+        runners: Test
 
     - name: Save Node packages
       if: always()
