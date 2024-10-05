@@ -1,4 +1,9 @@
-import type { AccountCreatedEvent, BankEvent, DepositEvent } from './accountAggregate.types';
+import type {
+	AccountCreatedEvent,
+	BankEvent,
+	DepositEvent,
+	WithdrawalEvent,
+} from "./accountAggregate.types";
 
 export const generateAggregate = (events: BankEvent[]) => {
 	let account: any = null;
@@ -36,8 +41,15 @@ function initializeAccount(event: AccountCreatedEvent) {
 }
 
 function applyDeposit(account: any, event: DepositEvent) {
-  return {
-    ...account,
-    balance: account.balance + event.amount,
-  };
+	return {
+		...account,
+		balance: account.balance + event.amount,
+	};
+}
+
+function applyWithdrawal(account: any, event: WithdrawalEvent) {
+	return {
+		...account,
+		balance: account.balance - event.amount,
+	};
 }

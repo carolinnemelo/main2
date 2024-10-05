@@ -82,7 +82,7 @@ describe('AccountAggregation', () => {
 
     });
 
-    it.skip('should throw if total amount after deposit goes above account maxBalance', async () => {
+    it('should throw if total amount after deposit goes above account maxBalance', async () => {
       // Arrange
       const events = await readEventStream('stream-006.json');
       // Assert
@@ -90,7 +90,7 @@ describe('AccountAggregation', () => {
     });
   });
 
-  describe.skip("containing 'withdrawal' events", () => {
+  describe("containing 'withdrawal' events", () => {
     it('should decrease amount of money from one deposit', async () => {
       // Arrange
       const events = await readEventStream('stream-007.json');
