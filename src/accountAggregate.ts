@@ -1,3 +1,4 @@
+import { timeStamp } from "node:console";
 import type {
 	AccountCreatedEvent,
 	BankEvent,
@@ -23,19 +24,18 @@ export const generateAggregate = (events: BankEvent[]) => {
 					throw new Error("281 ERROR_BALANCE_SUCCEED_MAX_BALANCE");
 				}
 				break;
-      case "withdrawal":
-        if (!account) {
+			case "withdrawal":
+				if (!account) {
 					throw new Error("128 ERROR_ACCOUNT_UNINSTANTIATED");
 				}
-        account = applyWithdrawal(account, event);
-        if (account.balance < 0) {
+				account = applyWithdrawal(account, event);
+				if (account.balance < 0) {
 					throw new Error("285 ERROR_BALANCE_IN_NEGATIVE");
 				}
-        break;
-      case "deactivate":
-        account = deactivateAccount(account, event);
-        console.log(event.type)
-        break;
+				break;
+			case "deactivate":
+				account = deactivateAccount(account, event);
+				break;
 			default:
 				throw new Error("162 ERROR_EVENT_NOT_SUPPORTED");
 		}
@@ -52,7 +52,7 @@ function initializeAccount(event: AccountCreatedEvent) {
 		currency: event.currency,
 		maxBalance: event.maxBalance,
 		status: "active",
-    accountLog: [],
+		accountLog: [],
 	};
 }
 
@@ -74,5 +74,12 @@ function deactivateAccount(account: any, event: DeactivateEvent) {
 	return {
 		...account,
 		status: "disabled",
+		accountLog: [
+			{
+				type: event.type.toUpperCase(),
+				timestamp: event.timestamp,
+				message: event.reason,
+			},
+		],
 	};
 }
