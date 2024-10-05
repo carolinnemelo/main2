@@ -128,6 +128,11 @@ function activateAccount(account: any, event: ActivateEvent) {
 }
 
 function closeAccount(account: any, event: ClosureEvent) {
+  account.accountLog.push({
+		type: event.type.toUpperCase(),
+		timestamp: event.timestamp,
+		message: `Reason: ${event.reason}, Closing Balance: '${account.balance}'`
+	});
   return {
     ...account,
     status: "closed"
