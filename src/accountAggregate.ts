@@ -31,6 +31,9 @@ export const generateAggregate = (events: BankEvent[]) => {
 					throw new Error("285 ERROR_BALANCE_IN_NEGATIVE");
 				}
         break;
+      case "deactivate":
+        console.log(event.type)
+        break;
 			default:
 				throw new Error("162 ERROR_EVENT_NOT_SUPPORTED");
 		}
