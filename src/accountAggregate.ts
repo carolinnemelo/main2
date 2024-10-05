@@ -51,6 +51,7 @@ function initializeAccount(event: AccountCreatedEvent) {
 		balance: event.initialBalance,
 		currency: event.currency,
 		maxBalance: event.maxBalance,
+		status: "active",
 	};
 }
 
