@@ -33,6 +33,7 @@ export const generateAggregate = (events: BankEvent[]) => {
 				}
         break;
       case "deactivate":
+        account = deactivateAccount(account, event);
         console.log(event.type)
         break;
 			default:
