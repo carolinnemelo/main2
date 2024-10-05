@@ -19,6 +19,9 @@ export const generateAggregate = (events: BankEvent[]) => {
 				if (!account) {
 					throw new Error("128 ERROR_ACCOUNT_UNINSTANTIATED");
 				}
+        if (account.status === "disabled") {
+					throw new Error("344 ERROR_TRANSACTION_REJECTED_ACCOUNT_DEACTIVATED");
+				}
 				account = applyDeposit(account, event);
 				if (account.balance > account.maxBalance) {
 					throw new Error("281 ERROR_BALANCE_SUCCEED_MAX_BALANCE");
