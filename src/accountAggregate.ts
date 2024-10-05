@@ -6,15 +6,18 @@ export const generateAggregate = (events: BankEvent[]) => {
 
   events.forEach((event) => {
     switch (event.type) {
-      case 'account-created':
-        account = initializeAccount(event);
-        break;
-      case 'deposit':
-        account = applyDeposit(account, event);
-        break;
-      default:
-        throw new Error('162 ERROR_EVENT_NOT_SUPPORTED');
-    }
+			case "account-created":
+				account = initializeAccount(event);
+				break;
+			case "deposit":
+				if (!account) {
+					throw new Error("128 ERROR_ACCOUNT_UNINSTANTIATED");
+				}
+				account = applyDeposit(account, event);
+				break;
+			default:
+				throw new Error("162 ERROR_EVENT_NOT_SUPPORTED");
+		}
   });
 
   return account;
