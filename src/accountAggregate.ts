@@ -27,6 +27,9 @@ export const generateAggregate = (events: BankEvent[]) => {
 					throw new Error("128 ERROR_ACCOUNT_UNINSTANTIATED");
 				}
         account = applyWithdrawal(account, event);
+        if (account.balance < 0) {
+					throw new Error("285 ERROR_BALANCE_IN_NEGATIVE");
+				}
         break;
 			default:
 				throw new Error("162 ERROR_EVENT_NOT_SUPPORTED");
