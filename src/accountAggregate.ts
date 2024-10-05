@@ -4,6 +4,7 @@ import type {
 	ActivateEvent,
 	BankEvent,
 	ClosureEvent,
+	CurrencyChangeEvent,
 	DeactivateEvent,
 	DepositEvent,
 	WithdrawalEvent,
@@ -21,11 +22,11 @@ export const generateAggregate = (events: BankEvent[]) => {
 			case "deposit":
 				if (!account) {
 					throw new Error("128 ERROR_ACCOUNT_UNINSTANTIATED");
-				} 
-        if (account.status === "closed") {
+				}
+				if (account.status === "closed") {
 					throw new Error("502 ERROR_ACCOUNT_CLOSED");
-				}  
-        if (account.status === "disabled") {
+				}
+				if (account.status === "disabled") {
 					throw new Error("344 ERROR_TRANSACTION_REJECTED_ACCOUNT_DEACTIVATED");
 				}
 				account = applyDeposit(account, event);
@@ -37,10 +38,10 @@ export const generateAggregate = (events: BankEvent[]) => {
 				if (!account) {
 					throw new Error("128 ERROR_ACCOUNT_UNINSTANTIATED");
 				}
-        if (account.status === "closed") {
+				if (account.status === "closed") {
 					throw new Error("502 ERROR_ACCOUNT_CLOSED");
-				} 
-        if (account.status === "disabled") {
+				}
+				if (account.status === "disabled") {
 					throw new Error("344 ERROR_TRANSACTION_REJECTED_ACCOUNT_DEACTIVATED");
 				}
 				account = applyWithdrawal(account, event);
@@ -49,23 +50,29 @@ export const generateAggregate = (events: BankEvent[]) => {
 				}
 				break;
 			case "deactivate":
-        if (account.status === "closed") {
+				if (account.status === "closed") {
 					throw new Error("502 ERROR_ACCOUNT_CLOSED");
 				}
 				account = deactivateAccount(account, event);
 				break;
-      case "activate":
-        if (account.status === "closed") {
+			case "activate":
+				if (account.status === "closed") {
 					throw new Error("502 ERROR_ACCOUNT_CLOSED");
 				}
 				account = activateAccount(account, event);
-        break;
-      case "closure":
-        if (account.status === "closed") {
+				break;
+			case "closure":
+				if (account.status === "closed") {
 					throw new Error("502 ERROR_ACCOUNT_CLOSED");
 				}
-        account = closeAccount(account, event);
-        break;
+				account = closeAccount(account, event);
+				break;
+			case "currency-change":
+				if (account.status === "closed") {
+					throw new Error("502 ERROR_ACCOUNT_CLOSED");
+				}
+				account = currencyChange(account, event);
+				break;
 			default:
 				throw new Error("162 ERROR_EVENT_NOT_SUPPORTED");
 		}
@@ -154,10 +161,10 @@ function closeAccount(account: any, event: ClosureEvent) {
   }
 }
 
-function CurrencyChange(account: any, event: ClosureEvent) {
+function currencyChange(account: any, event: CurrencyChangeEvent) {
 	return {
 		...account,
-		balance: account.newBalance,
-		currency: account.newCurrency,
+		balance: event.newBalance,
+		currency: event.newCurrency,
 	};
 }
