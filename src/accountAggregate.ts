@@ -31,6 +31,9 @@ export const generateAggregate = (events: BankEvent[]) => {
 				if (!account) {
 					throw new Error("128 ERROR_ACCOUNT_UNINSTANTIATED");
 				}
+        if (account.status === "disabled") {
+					throw new Error("344 ERROR_TRANSACTION_REJECTED_ACCOUNT_DEACTIVATED");
+				}
 				account = applyWithdrawal(account, event);
 				if (account.balance < 0) {
 					throw new Error("285 ERROR_BALANCE_IN_NEGATIVE");
