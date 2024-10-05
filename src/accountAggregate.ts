@@ -22,6 +22,9 @@ export const generateAggregate = (events: BankEvent[]) => {
 					throw new Error("281 ERROR_BALANCE_SUCCEED_MAX_BALANCE");
 				}
 				break;
+      case "withdrawal":
+        account = applyWithdrawal(account, event);
+        break;
 			default:
 				throw new Error("162 ERROR_EVENT_NOT_SUPPORTED");
 		}
