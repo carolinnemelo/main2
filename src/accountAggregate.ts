@@ -48,6 +48,9 @@ export const generateAggregate = (events: BankEvent[]) => {
       case "activate":
 				account = activateAccount(account, event);
         break;
+      case "closure":
+        account = closeAccount(account, event);
+        break;
 			default:
 				throw new Error("162 ERROR_EVENT_NOT_SUPPORTED");
 		}
