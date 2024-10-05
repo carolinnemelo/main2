@@ -153,3 +153,11 @@ function closeAccount(account: any, event: ClosureEvent) {
     status: "closed"
   }
 }
+
+function CurrencyChange(account: any, event: ClosureEvent) {
+	return {
+		...account,
+		balance: account.newBalance,
+		currency: account.newCurrency,
+	};
+}
