@@ -3,6 +3,7 @@ import type {
 	AccountCreatedEvent,
 	ActivateEvent,
 	BankEvent,
+	ClosureEvent,
 	DeactivateEvent,
 	DepositEvent,
 	WithdrawalEvent,
@@ -121,4 +122,11 @@ function activateAccount(account: any, event: ActivateEvent) {
     status: "active"
   }
 
+}
+
+function closeAccount(account: any, event: ClosureEvent) {
+  return {
+    ...account,
+    status: "closed"
+  }
 }
