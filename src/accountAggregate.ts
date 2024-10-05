@@ -1,4 +1,3 @@
-import { timeStamp } from "node:console";
 import type {
 	AccountCreatedEvent,
 	ActivateEvent,
@@ -12,7 +11,13 @@ import type {
 import type { an } from "vitest/dist/chunks/reporters.DAfKSDh5.js";
 
 export const generateAggregate = (events: BankEvent[]) => {
-	let account: any = null;
+	let account: any = null
+
+  events.map(e => {
+    console.log(e.eventId);
+
+  })
+  
 
 	events.forEach((event) => {
 		switch (event.type) {
