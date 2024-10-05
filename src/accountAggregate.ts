@@ -21,7 +21,10 @@ export const generateAggregate = (events: BankEvent[]) => {
 			case "deposit":
 				if (!account) {
 					throw new Error("128 ERROR_ACCOUNT_UNINSTANTIATED");
-				}
+				} 
+        if (account.status === "closed") {
+					throw new Error("502 ERROR_ACCOUNT_CLOSED");
+				}  
         if (account.status === "disabled") {
 					throw new Error("344 ERROR_TRANSACTION_REJECTED_ACCOUNT_DEACTIVATED");
 				}
@@ -34,6 +37,9 @@ export const generateAggregate = (events: BankEvent[]) => {
 				if (!account) {
 					throw new Error("128 ERROR_ACCOUNT_UNINSTANTIATED");
 				}
+        if (account.status === "closed") {
+					throw new Error("502 ERROR_ACCOUNT_CLOSED");
+				} 
         if (account.status === "disabled") {
 					throw new Error("344 ERROR_TRANSACTION_REJECTED_ACCOUNT_DEACTIVATED");
 				}
@@ -43,12 +49,21 @@ export const generateAggregate = (events: BankEvent[]) => {
 				}
 				break;
 			case "deactivate":
+        if (account.status === "closed") {
+					throw new Error("502 ERROR_ACCOUNT_CLOSED");
+				}
 				account = deactivateAccount(account, event);
 				break;
       case "activate":
+        if (account.status === "closed") {
+					throw new Error("502 ERROR_ACCOUNT_CLOSED");
+				}
 				account = activateAccount(account, event);
         break;
       case "closure":
+        if (account.status === "closed") {
+					throw new Error("502 ERROR_ACCOUNT_CLOSED");
+				}
         account = closeAccount(account, event);
         break;
 			default:
