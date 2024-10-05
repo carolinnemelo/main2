@@ -108,6 +108,11 @@ function deactivateAccount(account: any, event: DeactivateEvent) {
 }
 
 function activateAccount(account: any, event: ActivateEvent) {
+  account.accountLog.push({
+		type: event.type.toUpperCase(),
+		timestamp: event.timestamp,
+		message: "Account reactivated",
+	});
   return {
     ...account,
     status: "active"
