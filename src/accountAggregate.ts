@@ -23,6 +23,9 @@ export const generateAggregate = (events: BankEvent[]) => {
 				}
 				break;
       case "withdrawal":
+        if (!account) {
+					throw new Error("128 ERROR_ACCOUNT_UNINSTANTIATED");
+				}
         account = applyWithdrawal(account, event);
         break;
 			default:
