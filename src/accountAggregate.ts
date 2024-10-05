@@ -1,11 +1,13 @@
 import { timeStamp } from "node:console";
 import type {
 	AccountCreatedEvent,
+	ActivateEvent,
 	BankEvent,
 	DeactivateEvent,
 	DepositEvent,
 	WithdrawalEvent,
 } from "./accountAggregate.types";
+import type { an } from "vitest/dist/chunks/reporters.DAfKSDh5.js";
 
 export const generateAggregate = (events: BankEvent[]) => {
 	let account: any = null;
@@ -100,4 +102,12 @@ function deactivateAccount(account: any, event: DeactivateEvent) {
 			},
 		],
 	};
+}
+
+function activateAccount(account: any, event: ActivateEvent) {
+  return {
+    ...account,
+    status: "active"
+  }
+
 }
