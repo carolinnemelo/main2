@@ -71,6 +71,18 @@ function applyWithdrawal(account: any, event: WithdrawalEvent) {
 }
 
 function deactivateAccount(account: any, event: DeactivateEvent) {
+  if (account.accountLog.length > 0) {
+		account.accountLog.push({
+			type: event.type.toUpperCase(),
+			timestamp: event.timestamp,
+			message: event.reason,
+		});
+		return {
+			...account,
+			status: "disabled",
+		};
+	}
+
 	return {
 		...account,
 		status: "disabled",
