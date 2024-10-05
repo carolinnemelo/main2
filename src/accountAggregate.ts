@@ -12,12 +12,15 @@ import type { an } from "vitest/dist/chunks/reporters.DAfKSDh5.js";
 
 export const generateAggregate = (events: BankEvent[]) => {
 	let account: any = null
-
-  events.map(e => {
-    console.log(e.eventId);
-
-  })
+  let counter = 0;
   
+  events.map(e => {
+    let changingId = e.eventId;
+    counter++
+    if(changingId !== counter) {
+      throw new Error("511 ERROR_INVALID_EVENT_STREAM")
+    }
+  })
 
 	events.forEach((event) => {
 		switch (event.type) {
