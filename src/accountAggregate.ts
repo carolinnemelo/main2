@@ -162,6 +162,11 @@ function closeAccount(account: any, event: ClosureEvent) {
 }
 
 function currencyChange(account: any, event: CurrencyChangeEvent) {
+  account.accountLog.push({
+		type: event.type.toUpperCase(),
+		timestamp: event.timestamp,
+		message: `Change currency from '${account.currency}' to '${event.newCurrency}'`,
+	});
 	return {
 		...account,
 		balance: event.newBalance,
