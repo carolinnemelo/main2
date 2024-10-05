@@ -1,6 +1,7 @@
 import type {
 	AccountCreatedEvent,
 	BankEvent,
+	DeactivateEvent,
 	DepositEvent,
 	WithdrawalEvent,
 } from "./accountAggregate.types";
@@ -63,5 +64,12 @@ function applyWithdrawal(account: any, event: WithdrawalEvent) {
 	return {
 		...account,
 		balance: account.balance - event.amount,
+	};
+}
+
+function deactivateAccount(account: any, event: DeactivateEvent) {
+	return {
+		...account,
+		status: "disabled",
 	};
 }
