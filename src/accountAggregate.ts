@@ -44,6 +44,9 @@ export const generateAggregate = (events: BankEvent[]) => {
 			case "deactivate":
 				account = deactivateAccount(account, event);
 				break;
+      case "activate":
+				account = activateAccount(account, event);
+        break;
 			default:
 				throw new Error("162 ERROR_EVENT_NOT_SUPPORTED");
 		}
