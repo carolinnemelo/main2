@@ -52,6 +52,7 @@ function initializeAccount(event: AccountCreatedEvent) {
 		currency: event.currency,
 		maxBalance: event.maxBalance,
 		status: "active",
+    accountLog: [],
 	};
 }
 
