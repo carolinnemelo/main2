@@ -27,47 +27,24 @@ export const generateAggregate = (events: BankEvent[]) => {
 				account = initializeAccount(event);
 				break;
 			case "deposit":
-
 				account = applyDeposit(account, event);
-			
 				break;
 			case "withdrawal":
-				if (!account) {
-					throw new Error("128 ERROR_ACCOUNT_UNINSTANTIATED");
-				}
-				if (account.status === "closed") {
-					throw new Error("502 ERROR_ACCOUNT_CLOSED");
-				}
-				if (account.status === "disabled") {
-					throw new Error("344 ERROR_TRANSACTION_REJECTED_ACCOUNT_DEACTIVATED");
-				}
 				account = applyWithdrawal(account, event);
 				if (account.balance < 0) {
 					throw new Error("285 ERROR_BALANCE_IN_NEGATIVE");
 				}
 				break;
 			case "deactivate":
-				if (account.status === "closed") {
-					throw new Error("502 ERROR_ACCOUNT_CLOSED");
-				}
 				account = deactivateAccount(account, event);
 				break;
 			case "activate":
-				if (account.status === "closed") {
-					throw new Error("502 ERROR_ACCOUNT_CLOSED");
-				}
 				account = activateAccount(account, event);
 				break;
 			case "closure":
-				if (account.status === "closed") {
-					throw new Error("502 ERROR_ACCOUNT_CLOSED");
-				}
 				account = closeAccount(account, event);
 				break;
 			case "currency-change":
-				if (account.status === "closed") {
-					throw new Error("502 ERROR_ACCOUNT_CLOSED");
-				}
 				account = currencyChange(account, event);
 				break;
 			default:
@@ -110,6 +87,15 @@ function applyDeposit(account: any, event: DepositEvent) {
 }
 
 function applyWithdrawal(account: any, event: WithdrawalEvent) {
+  if (!account) {
+		throw new Error("128 ERROR_ACCOUNT_UNINSTANTIATED");
+	}
+	if (account.status === "closed") {
+		throw new Error("502 ERROR_ACCOUNT_CLOSED");
+	}
+	if (account.status === "disabled") {
+		throw new Error("344 ERROR_TRANSACTION_REJECTED_ACCOUNT_DEACTIVATED");
+	}
 	return {
 		...account,
 		balance: account.balance - event.amount,
@@ -117,6 +103,9 @@ function applyWithdrawal(account: any, event: WithdrawalEvent) {
 }
 
 function deactivateAccount(account: any, event: DeactivateEvent) {
+  if (account.status === "closed") {
+		throw new Error("502 ERROR_ACCOUNT_CLOSED");
+	}
   if (account.accountLog.length > 0) {
 		account.accountLog.push({
 			type: event.type.toUpperCase(),
@@ -143,6 +132,9 @@ function deactivateAccount(account: any, event: DeactivateEvent) {
 }
 
 function activateAccount(account: any, event: ActivateEvent) {
+  if (account.status === "closed") {
+		throw new Error("502 ERROR_ACCOUNT_CLOSED");
+	}
   if (account.status === "active") {
 		return { ...account };
 	}
@@ -159,6 +151,9 @@ function activateAccount(account: any, event: ActivateEvent) {
 }
 
 function closeAccount(account: any, event: ClosureEvent) {
+  if (account.status === "closed") {
+		throw new Error("502 ERROR_ACCOUNT_CLOSED");
+	}
   account.accountLog.push({
 		type: event.type.toUpperCase(),
 		timestamp: event.timestamp,
@@ -171,6 +166,9 @@ function closeAccount(account: any, event: ClosureEvent) {
 }
 
 function currencyChange(account: any, event: CurrencyChangeEvent) {
+  if (account.status === "closed") {
+		throw new Error("502 ERROR_ACCOUNT_CLOSED");
+	}
   account.accountLog.push({
 		type: event.type.toUpperCase(),
 		timestamp: event.timestamp,
