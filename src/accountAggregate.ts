@@ -10,22 +10,16 @@ import type {
 } from "./accountAggregate.types";
 
 export const generateAggregate = (events: BankEvent[]) => {
-	let account: any = null
-  let counter = 0;
-  
-  events.map(e => {
-    let changingId = e.eventId;
-    counter++
-    if(changingId !== counter) {
-      throw new Error("511 ERROR_INVALID_EVENT_STREAM")
-    }
-  })
+	let account: any = null;
 
-  
 	events.forEach((event) => {
 		if (account && account.status === "closed") {
 			throw new Error("502 ERROR_ACCOUNT_CLOSED");
 		}
+		if (account && account.revision + 1 !== event.eventId) {
+			throw new Error("511 ERROR_INVALID_EVENT_STREAM");
+		}
+
 		switch (event.type) {
 			case "account-created":
 				account = initializeAccount(event);
@@ -66,6 +60,7 @@ function initializeAccount(event: AccountCreatedEvent) {
 		maxBalance: event.maxBalance,
 		status: "active",
 		accountLog: [],
+		revision: event.eventId,
 	};
 }
 
@@ -73,7 +68,6 @@ function applyDeposit(account: any, event: DepositEvent) {
 	if (!account) {
 		throw new Error("128 ERROR_ACCOUNT_UNINSTANTIATED");
 	}
-
 	if (account.status === "disabled") {
 		throw new Error("344 ERROR_TRANSACTION_REJECTED_ACCOUNT_DEACTIVATED");
 	}
@@ -82,6 +76,7 @@ function applyDeposit(account: any, event: DepositEvent) {
 	}
 	return {
 		...account,
+		revision: account.revision + 1,
 		balance: account.balance + event.amount,
 	};
 }
@@ -90,7 +85,6 @@ function applyWithdrawal(account: any, event: WithdrawalEvent) {
 	if (!account) {
 		throw new Error("128 ERROR_ACCOUNT_UNINSTANTIATED");
 	}
-
 	if (account.status === "disabled") {
 		throw new Error("344 ERROR_TRANSACTION_REJECTED_ACCOUNT_DEACTIVATED");
 	}
@@ -99,6 +93,7 @@ function applyWithdrawal(account: any, event: WithdrawalEvent) {
 	}
 	return {
 		...account,
+		revision: account.revision + 1,
 		balance: account.balance - event.amount,
 	};
 }
@@ -112,12 +107,14 @@ function deactivateAccount(account: any, event: DeactivateEvent) {
 		});
 		return {
 			...account,
+			revision: account.revision + 1,
 			status: "disabled",
 		};
 	}
 
 	return {
 		...account,
+		revision: account.revision + 1,
 		status: "disabled",
 		accountLog: [
 			{
@@ -140,6 +137,7 @@ function activateAccount(account: any, event: ActivateEvent) {
 	});
 	return {
 		...account,
+		revision: account.revision + 1,
 		status: "active",
 	};
 }
@@ -164,6 +162,7 @@ function currencyChange(account: any, event: CurrencyChangeEvent) {
 	});
 	return {
 		...account,
+		revision: account.revision + 1,
 		balance: event.newBalance,
 		currency: event.newCurrency,
 	};
