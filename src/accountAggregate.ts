@@ -31,9 +31,7 @@ export const generateAggregate = (events: BankEvent[]) => {
 				break;
 			case "withdrawal":
 				account = applyWithdrawal(account, event);
-				if (account.balance < 0) {
-					throw new Error("285 ERROR_BALANCE_IN_NEGATIVE");
-				}
+		
 				break;
 			case "deactivate":
 				account = deactivateAccount(account, event);
@@ -96,6 +94,9 @@ function applyWithdrawal(account: any, event: WithdrawalEvent) {
 	if (account.status === "disabled") {
 		throw new Error("344 ERROR_TRANSACTION_REJECTED_ACCOUNT_DEACTIVATED");
 	}
+  if (account.balance - event.amount < 0) {
+    throw new Error("285 ERROR_BALANCE_IN_NEGATIVE");
+  }
 	return {
 		...account,
 		balance: account.balance - event.amount,
