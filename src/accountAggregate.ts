@@ -8,7 +8,6 @@ import type {
 	DepositEvent,
 	WithdrawalEvent,
 } from "./accountAggregate.types";
-import type { an } from "vitest/dist/chunks/reporters.DAfKSDh5.js";
 
 export const generateAggregate = (events: BankEvent[]) => {
 	let account: any = null
@@ -28,15 +27,7 @@ export const generateAggregate = (events: BankEvent[]) => {
 				account = initializeAccount(event);
 				break;
 			case "deposit":
-				if (!account) {
-					throw new Error("128 ERROR_ACCOUNT_UNINSTANTIATED");
-				}
-				if (account.status === "closed") {
-					throw new Error("502 ERROR_ACCOUNT_CLOSED");
-				}
-				if (account.status === "disabled") {
-					throw new Error("344 ERROR_TRANSACTION_REJECTED_ACCOUNT_DEACTIVATED");
-				}
+
 				account = applyDeposit(account, event);
 				if (account.balance > account.maxBalance) {
 					throw new Error("281 ERROR_BALANCE_SUCCEED_MAX_BALANCE");
@@ -102,6 +93,15 @@ function initializeAccount(event: AccountCreatedEvent) {
 }
 
 function applyDeposit(account: any, event: DepositEvent) {
+  if (!account) {
+    throw new Error("128 ERROR_ACCOUNT_UNINSTANTIATED");
+  }
+  if (account.status === "closed") {
+    throw new Error("502 ERROR_ACCOUNT_CLOSED");
+  }
+  if (account.status === "disabled") {
+    throw new Error("344 ERROR_TRANSACTION_REJECTED_ACCOUNT_DEACTIVATED");
+  }
 	return {
 		...account,
 		balance: account.balance + event.amount,
