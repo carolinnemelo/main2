@@ -21,7 +21,11 @@ export const generateAggregate = (events: BankEvent[]) => {
     }
   })
 
+  
 	events.forEach((event) => {
+		if (account && account.status === "closed") {
+			throw new Error("502 ERROR_ACCOUNT_CLOSED");
+		}
 		switch (event.type) {
 			case "account-created":
 				account = initializeAccount(event);
@@ -31,7 +35,7 @@ export const generateAggregate = (events: BankEvent[]) => {
 				break;
 			case "withdrawal":
 				account = applyWithdrawal(account, event);
-		
+
 				break;
 			case "deactivate":
 				account = deactivateAccount(account, event);
@@ -66,18 +70,16 @@ function initializeAccount(event: AccountCreatedEvent) {
 }
 
 function applyDeposit(account: any, event: DepositEvent) {
-  if (!account) {
-    throw new Error("128 ERROR_ACCOUNT_UNINSTANTIATED");
-  }
-  if (account.status === "closed") {
-    throw new Error("502 ERROR_ACCOUNT_CLOSED");
-  }
-  if (account.status === "disabled") {
-    throw new Error("344 ERROR_TRANSACTION_REJECTED_ACCOUNT_DEACTIVATED");
-  }
-  if (account.balance + event.amount > account.maxBalance) {
-    throw new Error("281 ERROR_BALANCE_SUCCEED_MAX_BALANCE");
-  }
+	if (!account) {
+		throw new Error("128 ERROR_ACCOUNT_UNINSTANTIATED");
+	}
+
+	if (account.status === "disabled") {
+		throw new Error("344 ERROR_TRANSACTION_REJECTED_ACCOUNT_DEACTIVATED");
+	}
+	if (account.balance + event.amount > account.maxBalance) {
+		throw new Error("281 ERROR_BALANCE_SUCCEED_MAX_BALANCE");
+	}
 	return {
 		...account,
 		balance: account.balance + event.amount,
@@ -85,18 +87,16 @@ function applyDeposit(account: any, event: DepositEvent) {
 }
 
 function applyWithdrawal(account: any, event: WithdrawalEvent) {
-  if (!account) {
+	if (!account) {
 		throw new Error("128 ERROR_ACCOUNT_UNINSTANTIATED");
 	}
-	if (account.status === "closed") {
-		throw new Error("502 ERROR_ACCOUNT_CLOSED");
-	}
+
 	if (account.status === "disabled") {
 		throw new Error("344 ERROR_TRANSACTION_REJECTED_ACCOUNT_DEACTIVATED");
 	}
-  if (account.balance - event.amount < 0) {
-    throw new Error("285 ERROR_BALANCE_IN_NEGATIVE");
-  }
+	if (account.balance - event.amount < 0) {
+		throw new Error("285 ERROR_BALANCE_IN_NEGATIVE");
+	}
 	return {
 		...account,
 		balance: account.balance - event.amount,
@@ -104,10 +104,7 @@ function applyWithdrawal(account: any, event: WithdrawalEvent) {
 }
 
 function deactivateAccount(account: any, event: DeactivateEvent) {
-  if (account.status === "closed") {
-		throw new Error("502 ERROR_ACCOUNT_CLOSED");
-	}
-  if (account.accountLog.length > 0) {
+	if (account.accountLog.length > 0) {
 		account.accountLog.push({
 			type: event.type.toUpperCase(),
 			timestamp: event.timestamp,
@@ -133,44 +130,34 @@ function deactivateAccount(account: any, event: DeactivateEvent) {
 }
 
 function activateAccount(account: any, event: ActivateEvent) {
-  if (account.status === "closed") {
-		throw new Error("502 ERROR_ACCOUNT_CLOSED");
-	}
-  if (account.status === "active") {
+	if (account.status === "active") {
 		return { ...account };
 	}
-  account.accountLog.push({
+	account.accountLog.push({
 		type: event.type.toUpperCase(),
 		timestamp: event.timestamp,
 		message: "Account reactivated",
 	});
-  return {
-    ...account,
-    status: "active"
-  }
-
+	return {
+		...account,
+		status: "active",
+	};
 }
 
 function closeAccount(account: any, event: ClosureEvent) {
-  if (account.status === "closed") {
-		throw new Error("502 ERROR_ACCOUNT_CLOSED");
-	}
-  account.accountLog.push({
+	account.accountLog.push({
 		type: event.type.toUpperCase(),
 		timestamp: event.timestamp,
-		message: `Reason: ${event.reason}, Closing Balance: '${account.balance}'`
+		message: `Reason: ${event.reason}, Closing Balance: '${account.balance}'`,
 	});
-  return {
-    ...account,
-    status: "closed"
-  }
+	return {
+		...account,
+		status: "closed",
+	};
 }
 
 function currencyChange(account: any, event: CurrencyChangeEvent) {
-  if (account.status === "closed") {
-		throw new Error("502 ERROR_ACCOUNT_CLOSED");
-	}
-  account.accountLog.push({
+	account.accountLog.push({
 		type: event.type.toUpperCase(),
 		timestamp: event.timestamp,
 		message: `Change currency from '${account.currency}' to '${event.newCurrency}'`,
