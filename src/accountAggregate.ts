@@ -29,9 +29,7 @@ export const generateAggregate = (events: BankEvent[]) => {
 			case "deposit":
 
 				account = applyDeposit(account, event);
-				if (account.balance > account.maxBalance) {
-					throw new Error("281 ERROR_BALANCE_SUCCEED_MAX_BALANCE");
-				}
+			
 				break;
 			case "withdrawal":
 				if (!account) {
@@ -101,6 +99,9 @@ function applyDeposit(account: any, event: DepositEvent) {
   }
   if (account.status === "disabled") {
     throw new Error("344 ERROR_TRANSACTION_REJECTED_ACCOUNT_DEACTIVATED");
+  }
+  if (account.balance + event.amount > account.maxBalance) {
+    throw new Error("281 ERROR_BALANCE_SUCCEED_MAX_BALANCE");
   }
 	return {
 		...account,
